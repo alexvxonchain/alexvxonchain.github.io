@@ -462,6 +462,26 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
   if (!reduce) requestAnimationFrame(draw);
 })();
+
+// Click tracking (GoatCounter events): "<where it leads> (<where on the page>)"
+const DEST = [['prism-builder.com','prism-join'],['2082805017614897258','prism-guide'],['x.com','x'],['t.me','telegram'],['github.com','github'],['fomo.family','fomo']];
+document.addEventListener('click', e => {
+  const el = e.target.closest('a, #copyRef');
+  if (!el || !window.goatcounter || !window.goatcounter.count) return;
+  let name;
+  if (el.id === 'copyRef') name = 'prism-copy-ref';
+  else if (el.id === 'discordCard') name = 'discord-copy';
+  else if (el.closest('.art')) name = 'article: ' + el.querySelector('h4').textContent;
+  else {
+    const href = el.getAttribute('href') || '';
+    if (href.startsWith('#')) return;
+    const d = DEST.find(([k]) => href.includes(k));
+    const place = el.closest('nav') ? 'nav' : el.closest('header') ? 'hero' : (el.closest('section') || {}).id || 'contact';
+    name = (d ? d[1] : href) + ' (' + place + ')';
+  }
+  window.goatcounter.count({path: name, title: name, event: true});
+});
 </script>
+<script data-goatcounter="https://alexyz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
