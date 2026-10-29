@@ -6,7 +6,20 @@
 <title>ALEXYZ - Onchain</title>
 <meta name="description" content="ALEXYZ - onchain trader, NFT degen, builder. Prism ambassador.">
 <meta property="og:title" content="ALEXYZ - Onchain">
-<meta property="og:description" content="Onchain trader · NFT · Builder · Prism ambassador">
+<meta property="og:description" content="Onchain trader · AI agents · NFT · Prism ambassador">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://alexvxonchain.github.io/">
+<meta property="og:image" content="https://alexvxonchain.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@Alexvx_nft">
+<meta name="twitter:title" content="ALEXYZ - Onchain">
+<meta name="twitter:description" content="Onchain trader · AI agents · NFT · Prism ambassador">
+<meta name="twitter:image" content="https://alexvxonchain.github.io/og.png">
+<meta name="theme-color" content="#06060a">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -96,6 +109,11 @@
   .marquee .track{display:flex;gap:48px;width:max-content;animation:mq 30s linear infinite}
   .marquee span{font-family:Unbounded;font-weight:600;font-size:clamp(18px,3vw,28px);white-space:nowrap;color:#2a2a38}
   .marquee span i{font-style:normal;color:var(--acc)}
+  .marquee .tk{color:var(--muted);display:inline-flex;align-items:baseline;gap:12px}
+  .marquee .tk em{font-style:normal;color:var(--text);font-variant-numeric:tabular-nums}
+  .marquee .tk b{font-family:"JetBrains Mono";font-size:.55em;font-weight:600}
+  .marquee .tk b.up{color:var(--acc)}
+  .marquee .tk b.down{color:#ff5c7a}
   @keyframes mq{to{transform:translateX(-50%)}}
 
   section{padding:110px 0}
@@ -112,6 +130,13 @@
     padding:clamp(28px,5vw,64px);display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:center}
   @media(max-width:860px){.prism-in{grid-template-columns:1fr}}
   .prism-in>*{min-width:0}
+  .steps{grid-column:1/-1;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding-top:8px;border-top:1px solid var(--line)}
+  @media(max-width:760px){.steps{grid-template-columns:1fr}}
+  .steps li{display:flex;flex-direction:column;gap:6px;padding:18px 18px 20px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid var(--line);margin-top:16px}
+  .steps .n{font-family:"JetBrains Mono";font-size:12px;font-weight:600;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--acc);color:#000;margin-bottom:6px}
+  .steps b{font-family:Unbounded;font-weight:600;font-size:16px}
+  .steps span:not(.n){color:var(--muted);font-size:14px;line-height:1.55}
+  .steps a{color:var(--acc);text-decoration:underline;text-underline-offset:3px}
   @media(max-width:480px){.code{font-size:11.5px;padding:16px;overflow-x:auto}}
   .prism h3{font-family:Unbounded;font-weight:900;font-size:clamp(40px,7vw,84px);letter-spacing:-.04em;line-height:.95}
   .prism p{color:var(--muted);font-size:17px;line-height:1.6;margin:18px 0 28px;max-width:480px}
@@ -242,7 +267,7 @@
         <div>
           <span class="tag">BETA · REFERRAL</span>
           <h3>Prism<br>Builder</h3>
-          <p>I'm an official Prism ambassador. Join the beta through my link and get in early - before everyone else catches on.</p>
+          <p>Create content for your AI creator: photos and video from Nano Banana Pro, Kling, Sora 2 and Seedance in one place. I'm an official Prism ambassador - join through my link and start free.</p>
           <div class="btns">
             <a class="btn primary" href="https://prism-builder.com/?utm_source=ambassadors&utm_medium=prism-x&utm_campaign=alexyz" target="_blank" rel="noopener">Join the beta →</a>
             <a class="btn ghost" href="https://x.com/Alexvx_nft/status/2082805017614897258" target="_blank" rel="noopener">Read my Prism guide</a>
@@ -258,6 +283,23 @@
             <span>prism-builder.com · alexyz</span><span>⧉ copy</span>
           </div>
         </div>
+        <ol class="steps">
+          <li>
+            <span class="n">1</span>
+            <b>Open my link</b>
+            <span>Tap <a href="https://prism-builder.com/?utm_source=ambassadors&utm_medium=prism-x&utm_campaign=alexyz" target="_blank" rel="noopener">Join the beta</a> - the referral is applied automatically.</span>
+          </li>
+          <li>
+            <span class="n">2</span>
+            <b>Start free</b>
+            <span>Sign up and get 100 credits to try it. No card required.</span>
+          </li>
+          <li>
+            <span class="n">3</span>
+            <b>Create your AI creator</b>
+            <span>Pick a character and generate photos and video with the top models.</span>
+          </li>
+        </ol>
       </div>
     </div>
   </section>
@@ -356,9 +398,30 @@ const REF = "https://prism-builder.com/?utm_source=ambassadors&utm_medium=prism-
 document.getElementById('yr').textContent = new Date().getFullYear();
 
 // Marquee
+// Marquee with live prices (CoinGecko), refreshed every minute
+const COINS = [['bitcoin','BTC'], ['ethereum','ETH'], ['solana','SOL']];
 const words = ['ONCHAIN','NFT','AI AGENTS','PRISM AMBASSADOR','TRADING','BUILDER','WAGMI'];
+const coinHtml = ([id, sym]) => `<span class="tk" data-coin="${id}">${sym} <em>…</em> <b></b></span>`;
+const items = words.flatMap((w, i) => i < COINS.length ? [coinHtml(COINS[i]), w] : [w])
+  .map(x => x.startsWith('<') ? x : `<span>${x} <i>✦</i></span>`);
 const mq = document.getElementById('mq');
-mq.innerHTML = [...words, ...words].map(w => `<span>${w} <i>✦</i></span>`).join('');
+mq.innerHTML = [...items, ...items].join('');
+async function loadPrices(){
+  try {
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=' + COINS.map(c => c[0]).join(',') + '&vs_currencies=usd&include_24hr_change=true');
+    if (!r.ok) return;
+    const d = await r.json();
+    mq.querySelectorAll('.tk').forEach(el => {
+      const c = d[el.dataset.coin]; if (!c) return;
+      const ch = c.usd_24h_change || 0;
+      el.querySelector('em').textContent = '$' + c.usd.toLocaleString('en-US', {maximumFractionDigits: c.usd < 100 ? 2 : 0});
+      const b = el.querySelector('b');
+      b.textContent = (ch >= 0 ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(1) + '%';
+      b.className = ch >= 0 ? 'up' : 'down';
+    });
+  } catch {}
+}
+loadPrices(); setInterval(loadPrices, 60000);
 
 // Typed text
 const phrases = ['trading onchain.', 'building with Prism.', 'writing about AI agents.', 'hunting NFT alpha.', 'shipping on GitHub.'];
