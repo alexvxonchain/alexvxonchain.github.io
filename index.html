@@ -218,6 +218,19 @@
 
   .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);z-index:60;background:var(--acc);color:#000;font-weight:600;font-size:14px;padding:12px 18px;border-radius:999px;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
   .toast.show{transform:translate(-50%,0)}
+  @media(max-width:600px){.toast{bottom:80px}}
+
+  .sound{position:fixed;z-index:55;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));
+    display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;border:1px solid var(--line);
+    background:rgba(10,10,16,.7);backdrop-filter:blur(14px);color:var(--muted);font:600 12px "JetBrains Mono",monospace;cursor:pointer;transition:color .2s,border-color .2s}
+  .sound:hover{color:var(--text);border-color:rgba(255,255,255,.2)}
+  .sound:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+  .sound .eq{display:flex;align-items:flex-end;gap:2px;height:14px}
+  .sound .eq i{width:3px;height:3px;border-radius:2px;background:currentColor}
+  .sound.on{color:var(--acc);border-color:rgba(182,255,59,.4)}
+  .sound.on .eq i{animation:eq .9s ease-in-out infinite}
+  .sound.on .eq i:nth-child(2){animation-delay:.2s}.sound.on .eq i:nth-child(3){animation-delay:.4s}.sound.on .eq i:nth-child(4){animation-delay:.1s}
+  @keyframes eq{0%,100%{height:3px}50%{height:14px}}
 
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.hero h1 .row span{transform:none}.reveal{opacity:1;transform:none}}
 </style>
@@ -251,7 +264,7 @@
     </div>
   </div>
   <div class="profile">
-    <div class="avatar"><img src="https://unavatar.io/x/Alexvx_nft" alt="ALEXYZ" onerror="this.outerHTML='<div class=ph>A</div>'"></div>
+    <div class="avatar"><img src="img/avatar.jpg" alt="ALEXYZ" onerror="this.outerHTML='<div class=ph>A</div>'"></div>
     <div><div class="h">@Alexvx_nft</div><div class="s">Prism Ambassador</div></div>
   </div>
 </header>
@@ -359,6 +372,7 @@
 
 <footer><div class="wrap"><span>© <span id="yr"></span> ALEXYZ</span><span>not financial advice · dyor</span></div></footer>
 <div class="toast" id="toast">Referral link copied</div>
+<button class="sound" id="sound" type="button" aria-pressed="false"><span class="eq"><i></i><i></i><i></i><i></i></span><span id="soundLabel">SOUND OFF</span></button>
 
 <script>
 /* ===== Articles on X - add new ones to the top of this list ===== */
@@ -367,28 +381,28 @@ const ARTICLES = [
     url: 'https://x.com/Alexvx_nft/status/2110801244419748073',
     title: 'A Fake AI Couple Got 213K Likes and Made Over $50K',
     text: 'Someone fabricated an entire couple, gave them a fake life and published a cake-shop date that never happened. The internet rewarded the fiction.',
-    cover: 'https://pbs.twimg.com/amplify_video_thumb/2110801140577165312/img/NOVsBD_Z3ursWEo7.jpg',
+    cover: 'img/fake-ai-couple.jpg',
     tag: 'AI CONTENT', kind: 'POST', date: 'Oct 2026', likes: 151,
   },
   {
     url: 'https://x.com/Alexvx_nft/status/2084792358755844398',
     title: 'Claude Code Agents Turned One Creator Into a UGC Factory. Full Build Inside + Where the Cash Lands.',
     text: 'Same face. Endless clips. That part is solvable now. The part that still kills most UGC setups is the middle - running production like a studio.',
-    cover: 'https://pbs.twimg.com/media/HO6iOk7XIAEU0Fv.jpg',
+    cover: 'img/ugc-factory.jpg',
     tag: 'AI AGENTS', date: 'Aug 2026', likes: 140,
   },
   {
     url: 'https://x.com/Alexvx_nft/status/2082805017614897258',
     title: 'How I Make Money From AI Girls Using Prism + Claude! 💰 (2026 Guide)',
     text: "AI girls are one of the fastest ways to make money online in 2026. I've been running my own for 2+ years & made over $150k in the process.",
-    cover: 'https://pbs.twimg.com/media/HOaC13rXYAAn8BF.jpg',
+    cover: 'img/prism-ai-girls.jpg',
     tag: 'PRISM', date: 'Jul 2026', likes: 69, prism: true,
   },
   {
     url: 'https://x.com/Alexvx_nft/status/2074468964105703845',
     title: 'GPT-5.6 Ultra Subagents: What OpenAI shipped, what loop engineering changed, and the verify layer',
     text: 'OpenAI previewed GPT-5.6 on June 26, 2026. Same week, recursive agent loops went mainstream. Here is what changed and what still needs verifying.',
-    cover: 'https://pbs.twimg.com/media/HMlvRWTXQAA1aRR.jpg',
+    cover: 'img/gpt-5-6.jpg',
     tag: 'AI', date: 'Jul 2026', likes: 145,
   },
 ];
@@ -543,6 +557,47 @@ document.addEventListener('click', e => {
     name = (d ? d[1] : href) + ' (' + place + ')';
   }
   window.goatcounter.count({path: name, title: name, event: true});
+});
+
+// Sound: off by default; when on - soft ambient pad, ticks on hover, blips on click (all synthesized, no files)
+const snd = {ac: null, out: null, pad: null, on: false};
+function tone(freq, dur, type, vol, slide){
+  const t = snd.ac.currentTime, o = snd.ac.createOscillator(), g = snd.ac.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  if (slide) o.frequency.exponentialRampToValueAtTime(freq * slide, t + dur);
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  o.connect(g).connect(snd.out); o.start(t); o.stop(t + dur + .02);
+}
+function startPad(){
+  const ac = snd.ac, g = ac.createGain(), f = ac.createBiquadFilter(), lfo = ac.createOscillator(), lg = ac.createGain();
+  f.type = 'lowpass'; f.frequency.value = 420; f.Q.value = 4;
+  lfo.frequency.value = .07; lg.gain.value = 260; lfo.connect(lg).connect(f.frequency); lfo.start();
+  const oscs = [55, 82.4, 110.3, 164.8].map((hz, i) => { const o = ac.createOscillator(); o.type = i % 2 ? 'triangle' : 'sawtooth'; o.frequency.value = hz; o.detune.value = (i - 1.5) * 6; o.connect(f); o.start(); return o; });
+  g.gain.setValueAtTime(0, ac.currentTime); g.gain.linearRampToValueAtTime(.035, ac.currentTime + 2.5);
+  f.connect(g).connect(snd.out);
+  snd.pad = {g, stop(){ g.gain.setTargetAtTime(0, ac.currentTime, .4); setTimeout(() => { oscs.forEach(o => o.stop()); lfo.stop(); }, 2000); }};
+}
+const soundBtn = document.getElementById('sound'), soundLabel = document.getElementById('soundLabel');
+soundBtn.addEventListener('click', () => {
+  if (!snd.ac) { snd.ac = new (window.AudioContext || window.webkitAudioContext)(); snd.out = snd.ac.createGain(); snd.out.gain.value = .8; snd.out.connect(snd.ac.destination); }
+  snd.ac.resume();
+  snd.on = !snd.on;
+  soundBtn.classList.toggle('on', snd.on); soundBtn.setAttribute('aria-pressed', snd.on);
+  soundLabel.textContent = snd.on ? 'SOUND ON' : 'SOUND OFF';
+  if (snd.on) { startPad(); tone(660, .18, 'sine', .1, 1.5); }
+  else if (snd.pad) { snd.pad.stop(); snd.pad = null; }
+});
+const HOVERABLE = 'a, button, .card, #copyRef';
+let lastHover = null;
+document.addEventListener('pointerover', e => {
+  const el = e.target.closest(HOVERABLE);
+  if (el === lastHover) return;
+  lastHover = el;
+  if (snd.on && el && e.pointerType === 'mouse') tone(2200, .035, 'sine', .025);
+});
+document.addEventListener('click', e => {
+  if (!snd.on || e.target.closest('#sound') || !e.target.closest(HOVERABLE)) return;
+  tone(520, .12, 'triangle', .14, 1.6); setTimeout(() => snd.on && tone(1040, .09, 'sine', .06, 1.3), 45);
 });
 </script>
 <script data-goatcounter="https://alexyz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
