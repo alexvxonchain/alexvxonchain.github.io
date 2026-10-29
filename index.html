@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ALEXYZ - Onchain</title>
+<meta name="description" content="ALEXYZ - onchain trader, NFT degen, builder. Prism ambassador.">
+<meta property="og:title" content="ALEXYZ - Onchain">
+<meta property="og:description" content="Onchain trader · NFT · Builder · Prism ambassador">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#06060a;
+    --bg-2:#0d0d14;
+    --line:rgba(255,255,255,.08);
+    --text:#f2f2f7;
+    --muted:#8a8a9e;
+    --acc:#b6ff3b;      /* toxic lime */
+    --acc-2:#7c5cff;    /* violet */
+    --acc-3:#ff4fd8;    /* pink */
+    --radius:22px;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--acc);color:#000}
+
+  #bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .noise{position:fixed;inset:-50%;z-index:1;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:grain 1s steps(4) infinite}
+  @keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-1%)}}
+  .glow{position:fixed;width:520px;height:520px;border-radius:50%;z-index:1;pointer-events:none;
+    background:radial-gradient(circle,rgba(124,92,255,.22),transparent 65%);transform:translate(-50%,-50%);transition:opacity .3s}
+  main,header,footer{position:relative;z-index:2}
+
+  .wrap{max-width:1200px;margin:0 auto;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+  @media(max-width:600px){.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}}
+
+  /* NAV */
+  nav{position:fixed;top:calc(16px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:6px;
+    padding:6px;border:1px solid var(--line);border-radius:999px;background:rgba(10,10,16,.6);backdrop-filter:blur(14px);
+    max-width:calc(100% - 32px)}
+  nav .logo{font-family:Unbounded;font-weight:800;font-size:14px;padding:8px 14px;letter-spacing:.02em}
+  nav .logo b{color:var(--acc)}
+  nav a.l{font-size:13px;color:var(--muted);padding:8px 12px;border-radius:999px;transition:.2s}
+  nav a.l:hover{color:var(--text);background:rgba(255,255,255,.06)}
+  nav a.cta{font-size:13px;font-weight:600;background:var(--acc);color:#000;padding:9px 16px;border-radius:999px}
+  @media(max-width:640px){nav{gap:2px}nav .logo{padding:8px 8px 8px 10px;font-size:13px}nav a.l{padding:8px 7px;font-size:12px}nav a.cta{padding:8px 12px;font-size:12px}}
+  @media(max-width:350px){nav a.l[href="#posts"]{display:none}}
+  section,header{scroll-margin-top:90px}
+
+  /* HERO */
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:120px;padding-bottom:60px}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-family:"JetBrains Mono";font-size:12px;color:var(--acc);
+    border:1px solid rgba(182,255,59,.3);background:rgba(182,255,59,.06);padding:6px 12px;border-radius:999px;width:max-content}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 12px var(--acc);animation:pulse 1.6s infinite}
+  @keyframes pulse{50%{opacity:.3}}
+  .hero h1{font-family:Unbounded;font-weight:900;line-height:.88;letter-spacing:-.04em;margin:28px 0 20px;
+    font-size:clamp(44px,13.5vw,190px);white-space:nowrap}
+  .hero h1 .row{display:block;overflow:hidden;padding:.04em 0 .06em;margin-bottom:-.06em}
+  .hero h1 .row span{display:inline-block;transform:translateY(110%);animation:rise 1s cubic-bezier(.2,.8,.2,1) forwards}
+  .hero h1 .row:nth-child(2) span{animation-delay:.12s}
+  @keyframes rise{to{transform:none}}
+  .grad{background:linear-gradient(90deg,var(--acc),#3bffd0 35%,var(--acc-2) 70%,var(--acc-3));background-size:200% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;animation:shift 6s linear infinite}
+  @keyframes shift{to{background-position:200% 0}}
+  .hero-sub{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between}
+  .hero p.lead{max-width:520px;font-size:clamp(16px,2vw,19px);color:var(--muted);line-height:1.55}
+  .hero p.lead strong{color:var(--text);font-weight:500}
+  .typed{font-family:"JetBrains Mono";color:var(--acc)}
+  .typed::after{content:"▍";animation:pulse 1s infinite;margin-left:2px}
+  .btns{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:15px 22px;border-radius:999px;font-weight:600;font-size:15px;
+    transition:transform .2s,box-shadow .2s,background .2s;border:1px solid var(--line)}
+  .btn svg{width:18px;height:18px}
+  .btn.primary{background:var(--text);color:#000;border-color:transparent}
+  .btn.primary:hover{box-shadow:0 0 0 6px rgba(255,255,255,.08)}
+  .btn.ghost{background:rgba(255,255,255,.04)}
+  .btn.ghost:hover{background:rgba(255,255,255,.09)}
+  .btn:hover{transform:translateY(-2px)}
+
+  .profile{display:flex;align-items:center;gap:14px;margin-top:48px}
+  .avatar{width:56px;height:56px;border-radius:50%;padding:2px;background:conic-gradient(var(--acc),var(--acc-2),var(--acc-3),var(--acc));animation:spin 6s linear infinite}
+  .avatar img,.avatar .ph{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#111;display:grid;place-items:center;font-family:Unbounded;font-weight:800;animation:spin 6s linear infinite reverse}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .profile .h{font-weight:600}
+  .profile .s{font-family:"JetBrains Mono";font-size:12px;color:var(--muted)}
+
+  /* MARQUEE */
+  .marquee{border-block:1px solid var(--line);overflow:hidden;padding:18px 0;background:rgba(255,255,255,.015)}
+  .marquee .track{display:flex;gap:48px;width:max-content;animation:mq 30s linear infinite}
+  .marquee span{font-family:Unbounded;font-weight:600;font-size:clamp(18px,3vw,28px);white-space:nowrap;color:#2a2a38}
+  .marquee span i{font-style:normal;color:var(--acc)}
+  @keyframes mq{to{transform:translateX(-50%)}}
+
+  section{padding:110px 0}
+  .kicker{font-family:"JetBrains Mono";font-size:12px;color:var(--acc);letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px}
+  h2{font-family:Unbounded;font-weight:800;font-size:clamp(34px,6vw,68px);letter-spacing:-.03em;line-height:1}
+  h2 .m{color:var(--muted)}
+
+  /* PRISM */
+  .prism{position:relative;margin-top:48px;border-radius:32px;padding:2px;overflow:hidden;isolation:isolate}
+  .prism::before{content:"";position:absolute;inset:-50%;z-index:-1;
+    background:conic-gradient(from 0deg,var(--acc),#3bffd0,var(--acc-2),var(--acc-3),var(--acc));animation:spin 8s linear infinite}
+  .prism-in{border-radius:30px;background:radial-gradient(120% 140% at 100% 0%,rgba(124,92,255,.25),transparent 55%),
+      radial-gradient(90% 120% at 0% 100%,rgba(182,255,59,.12),transparent 55%),#0a0a11;
+    padding:clamp(28px,5vw,64px);display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:center}
+  @media(max-width:860px){.prism-in{grid-template-columns:1fr}}
+  .prism-in>*{min-width:0}
+  @media(max-width:480px){.code{font-size:11.5px;padding:16px;overflow-x:auto}}
+  .prism h3{font-family:Unbounded;font-weight:900;font-size:clamp(40px,7vw,84px);letter-spacing:-.04em;line-height:.95}
+  .prism p{color:var(--muted);font-size:17px;line-height:1.6;margin:18px 0 28px;max-width:480px}
+  .tag{display:inline-block;font-family:"JetBrains Mono";font-size:11px;padding:5px 10px;border-radius:6px;background:var(--acc);color:#000;font-weight:600;margin-bottom:18px}
+  .prism .btn.primary{background:var(--acc)}
+  .prism .btn.primary:hover{box-shadow:0 0 40px rgba(182,255,59,.45)}
+  .code{font-family:"JetBrains Mono";font-size:13px;background:rgba(0,0,0,.45);border:1px solid var(--line);border-radius:18px;padding:22px;line-height:1.9;color:var(--muted)}
+  .code .k{color:var(--acc-3)}.code .s{color:var(--acc)}.code .c{color:#4a4a5e}
+  .code .ref{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px;padding:12px 14px;border-radius:12px;background:rgba(182,255,59,.08);border:1px dashed rgba(182,255,59,.4);color:var(--text);cursor:pointer}
+  .code .ref span{white-space:nowrap}
+  .code .ref span:first-child{overflow:hidden;text-overflow:ellipsis}
+  .code .ref:hover{background:rgba(182,255,59,.14)}
+
+  /* LINKS GRID */
+  .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:48px}
+  .card{position:relative;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+    padding:26px;min-height:200px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;
+    transition:border-color .3s,transform .3s;transform-style:preserve-3d}
+  .card:hover{border-color:rgba(255,255,255,.2)}
+  .card::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;
+    background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.08),transparent 40%)}
+  .card:hover::after{opacity:1}
+  .card .ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.06)}
+  .card .ic svg{width:24px;height:24px}
+  .card .name{font-family:Unbounded;font-weight:600;font-size:22px;margin-top:22px}
+  .card .handle{font-family:"JetBrains Mono";font-size:13px;color:var(--muted);margin-top:6px}
+  .card .arr{position:absolute;top:24px;right:24px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;transition:.3s}
+  .card:hover .arr{background:var(--text);color:#000;transform:rotate(-45deg)}
+  .c-x{grid-column:span 4;grid-row:span 2;min-height:420px;
+    background:radial-gradient(80% 80% at 100% 0%,rgba(124,92,255,.25),transparent 60%),linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.01))}
+  .c-x .big{font-family:Unbounded;font-weight:900;font-size:clamp(40px,6vw,76px);letter-spacing:-.04em;line-height:.95}
+  .c-x .big em{font-style:normal;color:var(--acc)}
+  .c-x .ic{width:64px;height:64px;background:#fff;color:#000}
+  .c-x .ic svg{width:30px;height:30px}
+  .c-tg{grid-column:span 2}
+  .c-ds{grid-column:span 2}
+  .c-gh{grid-column:span 3}
+  .c-fomo{grid-column:span 3;background:radial-gradient(100% 120% at 0% 100%,rgba(255,79,216,.18),transparent 60%),linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01))}
+  .c-tg .ic{color:#2aabee}.c-ds .ic{color:#5865f2}.c-fomo .ic{color:var(--acc-3)}
+  .pill{display:inline-block;font-family:"JetBrains Mono";font-size:11px;padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);margin-top:14px;width:max-content}
+  @media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr)}.c-x,.c-gh,.c-fomo{grid-column:span 2}.c-x{min-height:340px}.c-tg,.c-ds{grid-column:span 1}}
+  @media(max-width:480px){.c-tg,.c-ds{grid-column:span 2}}
+
+  /* POSTS */
+  .posts{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px}
+  @media(max-width:1060px){.posts{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.posts{grid-template-columns:1fr}}
+  .post{border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.02);padding:22px;min-height:220px;display:flex;flex-direction:column;gap:14px}
+  .post .top{display:flex;align-items:center;gap:10px}
+  .post .top .av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc-2))}
+  .post .bar{height:10px;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.12),rgba(255,255,255,.06));background-size:200% 100%;animation:sh 1.6s infinite}
+  @keyframes sh{to{background-position:-200% 0}}
+  .art{position:relative;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.02);overflow:hidden;display:flex;flex-direction:column;transition:border-color .3s,transform .3s}
+  .art:hover{border-color:rgba(255,255,255,.22);transform:translateY(-4px)}
+  .art .cover{aspect-ratio:2/1;overflow:hidden;background:#111}
+  .art .cover img{width:100%;height:100%;object-fit:cover;object-position:center 30%;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+  .art:hover .cover img{transform:scale(1.05)}
+  .art .body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px;flex:1}
+  .art .meta{display:flex;gap:10px;align-items:center;font-family:"JetBrains Mono";font-size:11px;color:var(--muted)}
+  .art .meta .t{padding:3px 8px;border-radius:6px;border:1px solid var(--line);color:var(--text)}
+  .art .meta .t.hot{background:var(--acc);border-color:var(--acc);color:#000;font-weight:600}
+  .art h4{font-family:Unbounded;font-weight:600;font-size:18px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .art p{color:var(--muted);font-size:14px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .art .foot{margin-top:auto;display:flex;justify-content:space-between;font-family:"JetBrains Mono";font-size:12px;color:var(--muted)}
+  .art .foot b{color:var(--acc);font-weight:400}
+  .art.is-prism{border-color:rgba(182,255,59,.35);box-shadow:0 0 0 1px rgba(182,255,59,.1),0 20px 60px -20px rgba(182,255,59,.25)}
+
+  /* CONTACT */
+  .contact{text-align:center;padding:140px 0}
+  .contact h2{font-size:clamp(48px,11vw,150px);line-height:.9}
+  .contact p{color:var(--muted);margin:22px auto 34px;max-width:440px;font-size:17px}
+  .contact .btns{justify-content:center}
+
+  footer{border-top:1px solid var(--line);padding:28px 0;font-family:"JetBrains Mono";font-size:12px;color:var(--muted)}
+  footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity .9s,transform .9s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,120px);z-index:60;background:var(--acc);color:#000;font-weight:600;font-size:14px;padding:12px 18px;border-radius:999px;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+  .toast.show{transform:translate(-50%,0)}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.hero h1 .row span{transform:none}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="noise"></div>
+<div class="glow" id="glow"></div>
+
+<nav>
+  <a href="#top" class="logo">ALEX<b>YZ</b></a>
+  <a class="l" href="#prism">Prism</a>
+  <a class="l" href="#links">Links</a>
+  <a class="l" href="#posts">Posts</a>
+  <a class="cta" href="https://t.me/alexvx" target="_blank" rel="noopener">Contact</a>
+</nav>
+
+<header class="hero wrap" id="top">
+  <div class="badge"><span class="dot"></span> ONCHAIN · LIVE</div>
+  <h1>
+    <span class="row"><span>ALEX<span class="grad">YZ.</span></span></span>
+  </h1>
+  <div class="hero-sub">
+    <p class="lead"><strong>Onchain trader, NFT degen & builder.</strong> Finding alpha before the timeline does. Currently <span class="typed" id="typed"></span></p>
+    <div class="btns">
+      <a class="btn primary" href="https://x.com/Alexvx_nft" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Follow on X
+      </a>
+      <a class="btn ghost" href="#prism">Prism beta →</a>
+    </div>
+  </div>
+  <div class="profile">
+    <div class="avatar"><img src="https://unavatar.io/x/Alexvx_nft" alt="ALEXYZ" onerror="this.outerHTML='<div class=ph>A</div>'"></div>
+    <div><div class="h">@Alexvx_nft</div><div class="s">Prism Ambassador</div></div>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true"><div class="track" id="mq"></div></div>
+
+<main>
+  <section id="prism" class="wrap">
+    <div class="kicker reveal">// Ambassador</div>
+    <h2 class="reveal">Build with <span class="grad">Prism</span><br><span class="m">- early access.</span></h2>
+    <div class="prism reveal">
+      <div class="prism-in">
+        <div>
+          <span class="tag">BETA · REFERRAL</span>
+          <h3>Prism<br>Builder</h3>
+          <p>I'm an official Prism ambassador. Join the beta through my link and get in early - before everyone else catches on.</p>
+          <div class="btns">
+            <a class="btn primary" href="https://prism-builder.com/?utm_source=ambassadors&utm_medium=prism-x&utm_campaign=alexyz" target="_blank" rel="noopener">Join the beta →</a>
+            <a class="btn ghost" href="https://x.com/Alexvx_nft/status/2082805017614897258" target="_blank" rel="noopener">Read my Prism guide</a>
+          </div>
+        </div>
+        <div class="code">
+          <span class="c">// access.config</span><br>
+          <span class="k">const</span> ambassador = <span class="s">"alexyz"</span>;<br>
+          <span class="k">const</span> status &nbsp;&nbsp;&nbsp;&nbsp;= <span class="s">"beta"</span>;<br>
+          <span class="k">const</span> campaign &nbsp;&nbsp;= <span class="s">"alexyz"</span>;<br>
+          <span class="k">await</span> prism.join(ambassador);
+          <div class="ref" id="copyRef" title="Copy referral link">
+            <span>prism-builder.com · alexyz</span><span>⧉ copy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="links" class="wrap">
+    <div class="kicker reveal">// Find me</div>
+    <h2 class="reveal">Everywhere<br><span class="m">onchain & online.</span></h2>
+    <div class="grid">
+      <a class="card c-x reveal" href="https://x.com/Alexvx_nft" target="_blank" rel="noopener">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>
+        <span class="arr">↗</span>
+        <div>
+          <div class="big">Alpha lives<br>on <em>X</em>.</div>
+          <div class="handle" style="margin-top:14px">@Alexvx_nft - calls, threads, NFT plays</div>
+          <span class="pill">MAIN CHANNEL</span>
+        </div>
+      </a>
+      <a class="card c-tg reveal" href="https://t.me/alexvx" target="_blank" rel="noopener">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 4.3 18.6 20.05c-.25 1.1-.9 1.38-1.83.86l-5.06-3.73-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.15 9.37-8.47c.41-.36-.09-.56-.63-.2L5.77 13.52.78 11.96c-1.08-.34-1.1-1.08.23-1.6L20.5 2.85c.9-.33 1.69.2 1.44 1.45z"/></svg></div>
+        <span class="arr">↗</span>
+        <div><div class="name">Telegram</div><div class="handle">t.me/alexvx</div><span class="pill">DMs OPEN</span></div>
+      </a>
+      <a class="card c-ds reveal" href="#" id="discordCard" title="Copy Discord username">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.32 4.37a19.8 19.8 0 0 0-4.89-1.52.07.07 0 0 0-.08.04c-.21.38-.44.87-.61 1.25a18.27 18.27 0 0 0-5.49 0 12.6 12.6 0 0 0-.62-1.25.08.08 0 0 0-.08-.04 19.74 19.74 0 0 0-4.88 1.52.07.07 0 0 0-.03.03C.53 9.05-.32 13.58.1 18.06a.08.08 0 0 0 .03.06 19.9 19.9 0 0 0 5.99 3.03.08.08 0 0 0 .08-.03c.46-.63.87-1.3 1.23-1.99a.08.08 0 0 0-.04-.11 13.1 13.1 0 0 1-1.87-.89.08.08 0 0 1 0-.13l.37-.29a.07.07 0 0 1 .08-.01c3.93 1.79 8.18 1.79 12.06 0a.07.07 0 0 1 .08 0l.37.3a.08.08 0 0 1 0 .13 12.3 12.3 0 0 1-1.88.89.08.08 0 0 0-.04.11c.36.7.78 1.36 1.23 1.99a.08.08 0 0 0 .08.03 19.84 19.84 0 0 0 6-3.03.08.08 0 0 0 .03-.06c.5-5.18-.84-9.67-3.55-13.66a.06.06 0 0 0-.03-.03zM8.02 15.33c-1.18 0-2.16-1.09-2.16-2.42s.96-2.42 2.16-2.42c1.21 0 2.18 1.1 2.16 2.42 0 1.33-.96 2.42-2.16 2.42zm7.97 0c-1.18 0-2.15-1.09-2.15-2.42s.95-2.42 2.15-2.42c1.21 0 2.18 1.1 2.16 2.42 0 1.33-.95 2.42-2.16 2.42z"/></svg></div>
+        <span class="arr">↗</span>
+        <div><div class="name">Discord</div><div class="handle">alexvx · tap to copy</div><span class="pill">ADD ME</span></div>
+      </a>
+      <a class="card c-gh reveal" href="https://github.com/alexvxonchain" target="_blank" rel="noopener">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.07 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3"/></svg></div>
+        <span class="arr">↗</span>
+        <div><div class="name">GitHub</div><div class="handle">github.com/alexvxonchain</div><span class="pill">BUILDS & SCRIPTS</span></div>
+      </a>
+      <a class="card c-fomo reveal" href="https://fomo.family/r/Alexvx_nft" target="_blank" rel="noopener">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div>
+        <span class="arr">↗</span>
+        <div><div class="name">Fomo - trade with me</div><div class="handle">fomo.family/r/Alexvx_nft</div><span class="pill">COPY MY TRADES</span></div>
+      </a>
+    </div>
+  </section>
+
+  <section id="posts" class="wrap">
+    <div class="kicker reveal">// Latest</div>
+    <h2 class="reveal">Selected<br><span class="m">articles.</span></h2>
+    <div class="posts" id="postsGrid"></div>
+  </section>
+
+  <section class="contact wrap">
+    <div class="kicker reveal">// Contact</div>
+    <h2 class="reveal">Let's <span class="grad">talk.</span></h2>
+    <p class="reveal">Collabs, partnerships, alpha - fastest way is Telegram.</p>
+    <div class="btns reveal">
+      <a class="btn primary" href="https://t.me/alexvx" target="_blank" rel="noopener">Telegram @alexvx</a>
+      <a class="btn ghost" href="https://x.com/Alexvx_nft" target="_blank" rel="noopener">DM on X</a>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>© <span id="yr"></span> ALEXYZ</span><span>not financial advice · dyor</span></div></footer>
+<div class="toast" id="toast">Referral link copied</div>
+
+<script>
+/* ===== Articles on X - add new ones to the top of this list ===== */
+const ARTICLES = [
+  {
+    url: 'https://x.com/Alexvx_nft/status/2110801244419748073',
+    title: 'A Fake AI Couple Got 213K Likes and Made Over $50K',
+    text: 'Someone fabricated an entire couple, gave them a fake life and published a cake-shop date that never happened. The internet rewarded the fiction.',
+    cover: 'https://pbs.twimg.com/amplify_video_thumb/2110801140577165312/img/NOVsBD_Z3ursWEo7.jpg',
+    tag: 'AI CONTENT', kind: 'POST', date: 'Oct 2026', likes: 151,
+  },
+  {
+    url: 'https://x.com/Alexvx_nft/status/2084792358755844398',
+    title: 'Claude Code Agents Turned One Creator Into a UGC Factory. Full Build Inside + Where the Cash Lands.',
+    text: 'Same face. Endless clips. That part is solvable now. The part that still kills most UGC setups is the middle - running production like a studio.',
+    cover: 'https://pbs.twimg.com/media/HO6iOk7XIAEU0Fv.jpg',
+    tag: 'AI AGENTS', date: 'Aug 2026', likes: 140,
+  },
+  {
+    url: 'https://x.com/Alexvx_nft/status/2082805017614897258',
+    title: 'How I Make Money From AI Girls Using Prism + Claude! 💰 (2026 Guide)',
+    text: "AI girls are one of the fastest ways to make money online in 2026. I've been running my own for 2+ years & made over $150k in the process.",
+    cover: 'https://pbs.twimg.com/media/HOaC13rXYAAn8BF.jpg',
+    tag: 'PRISM', date: 'Jul 2026', likes: 69, prism: true,
+  },
+  {
+    url: 'https://x.com/Alexvx_nft/status/2074468964105703845',
+    title: 'GPT-5.6 Ultra Subagents: What OpenAI shipped, what loop engineering changed, and the verify layer',
+    text: 'OpenAI previewed GPT-5.6 on June 26, 2026. Same week, recursive agent loops went mainstream. Here is what changed and what still needs verifying.',
+    cover: 'https://pbs.twimg.com/media/HMlvRWTXQAA1aRR.jpg',
+    tag: 'AI', date: 'Jul 2026', likes: 145,
+  },
+];
+
+const REF = "https://prism-builder.com/?utm_source=ambassadors&utm_medium=prism-x&utm_campaign=alexyz";
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// Marquee
+const words = ['ONCHAIN','NFT','AI AGENTS','PRISM AMBASSADOR','TRADING','BUILDER','WAGMI'];
+const mq = document.getElementById('mq');
+mq.innerHTML = [...words, ...words].map(w => `<span>${w} <i>✦</i></span>`).join('');
+
+// Typed text
+const phrases = ['trading onchain.', 'building with Prism.', 'writing about AI agents.', 'hunting NFT alpha.', 'shipping on GitHub.'];
+const typed = document.getElementById('typed');
+let pi = 0, ci = 0, del = false;
+(function tick(){
+  const p = phrases[pi];
+  typed.textContent = p.slice(0, ci);
+  if (!del && ci < p.length) ci++;
+  else if (!del) { del = true; return setTimeout(tick, 1600); }
+  else if (ci > 0) ci--;
+  else { del = false; pi = (pi + 1) % phrases.length; }
+  setTimeout(tick, del ? 35 : 70);
+})();
+
+// Posts
+const grid = document.getElementById('postsGrid');
+if (ARTICLES.length) {
+  grid.innerHTML = ARTICLES.map(a => `
+    <a class="art reveal${a.prism ? ' is-prism' : ''}" href="${a.url}" target="_blank" rel="noopener">
+      <div class="cover"><img src="${a.cover}" alt="" loading="lazy" onerror="this.remove()"></div>
+      <div class="body">
+        <div class="meta"><span class="t${a.prism ? ' hot' : ''}">${a.tag}</span><span>${a.kind || 'ARTICLE'} · ${a.date}</span></div>
+        <h4>${a.title}</h4>
+        <p>${a.text}</p>
+        <div class="foot"><span>♥ ${a.likes}</span><b>Read on X ↗</b></div>
+      </div>
+    </a>`).join('');
+} else {
+  grid.innerHTML = Array.from({length:3}).map(() => `
+    <a class="post reveal" href="https://x.com/Alexvx_nft" target="_blank" rel="noopener">
+      <div class="top"><div class="av"></div><div><div style="font-weight:600">ALEXYZ</div><div style="font-family:'JetBrains Mono';font-size:12px;color:var(--muted)">@Alexvx_nft</div></div></div>
+      <div class="bar" style="width:92%"></div><div class="bar" style="width:78%"></div><div class="bar" style="width:60%"></div>
+      <div style="margin-top:auto;font-family:'JetBrains Mono';font-size:12px;color:var(--acc)">Read on X ↗</div>
+    </a>`).join('');
+}
+
+// In-page links: scroll by script so they work on any host
+document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(a => a.addEventListener('click', e => {
+  const t = document.querySelector(a.getAttribute('href'));
+  if (!t) return;
+  e.preventDefault();
+  t.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
+}));
+
+// Copy referral / Discord username
+const toast = document.getElementById('toast');
+function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); }
+document.getElementById('copyRef').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(REF); showToast('Referral link copied'); }
+  catch { showToast('Use the Join the beta button'); }
+});
+document.getElementById('discordCard').addEventListener('click', async e => {
+  e.preventDefault();
+  try { await navigator.clipboard.writeText('alexvx'); showToast('Discord username copied: alexvx'); }
+  catch { showToast('Discord: alexvx'); }
+});
+
+// Reveal on scroll
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold:.12});
+document.querySelectorAll('.reveal').forEach((el, i) => { el.style.transitionDelay = (i % 3) * 80 + 'ms'; io.observe(el); });
+
+// Cursor glow + card spotlight / tilt
+const glow = document.getElementById('glow');
+addEventListener('pointermove', e => { glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; });
+document.querySelectorAll('.card').forEach(c => {
+  c.addEventListener('pointermove', e => {
+    const r = c.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    c.style.setProperty('--mx', x + 'px'); c.style.setProperty('--my', y + 'px');
+    c.style.transform = `perspective(900px) rotateX(${(y / r.height - .5) * -5}deg) rotateY(${(x / r.width - .5) * 5}deg)`;
+  });
+  c.addEventListener('pointerleave', () => c.style.transform = '');
+});
+
+// Background: drifting node network
+const cv = document.getElementById('bg'), ctx = cv.getContext('2d');
+let W, H, pts = [];
+function resize(){
+  W = cv.width = innerWidth * devicePixelRatio; H = cv.height = innerHeight * devicePixelRatio;
+  cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+  const n = Math.min(90, Math.floor(innerWidth * innerHeight / 16000));
+  pts = Array.from({length:n}, () => ({x:Math.random()*W, y:Math.random()*H, vx:(Math.random()-.5)*.3*devicePixelRatio, vy:(Math.random()-.5)*.3*devicePixelRatio}));
+}
+resize(); addEventListener('resize', resize);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function draw(){
+  ctx.clearRect(0, 0, W, H);
+  const D = 140 * devicePixelRatio;
+  for (const p of pts) {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > W) p.vx *= -1;
+    if (p.y < 0 || p.y > H) p.vy *= -1;
+  }
+  for (let i = 0; i < pts.length; i++) {
+    for (let j = i + 1; j < pts.length; j++) {
+      const a = pts[i], b = pts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (d < D) { ctx.strokeStyle = `rgba(124,92,255,${(1 - d / D) * .25})`; ctx.lineWidth = devicePixelRatio; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    }
+    ctx.fillStyle = i % 7 ? 'rgba(255,255,255,.35)' : 'rgba(182,255,59,.9)';
+    ctx.beginPath(); ctx.arc(pts[i].x, pts[i].y, 1.4 * devicePixelRatio, 0, 7); ctx.fill();
+  }
+  if (!reduce) requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
